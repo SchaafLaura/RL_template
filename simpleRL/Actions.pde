@@ -31,10 +31,13 @@ class MovementAction extends Action {
     }
     
     
-    // RIGHT NOW DON'T CHECK IF SPOT IS FREE, JUST MOVE
-    performedBy.pos.x = goalLocation.x;
-    performedBy.pos.y = goalLocation.y;
+    if(!tileSet[currentLevel.map.mapData[goalLocation.x][goalLocation.y]].passable)
+      return failure;
+    
+    
+    performedBy.MoveTo(goalLocation);
     performedBy.energy -= cost;
+    println("changed position");
     return success;
 
     // new spot is empty - we can move there

@@ -1,16 +1,17 @@
 abstract class Actor extends Entity {
   ArrayDeque<Action> actionStack;
-  abstract void decideOnAction();
-  abstract Action getAction();
+  abstract void DecideOnAction();
+  abstract Action GetAction();
 
   String name;
-  int speed = 1;
-  int energy = 0;
+  int speed = 50;
+  int energy = 100;
   float health = 100;
   float maxHealth = 100;
 
   public Actor(int x, int y) {
     super(x, y);
+    actionStack = new ArrayDeque<Action>();
   }
 
   public Boolean HasEnoughEnergy() {

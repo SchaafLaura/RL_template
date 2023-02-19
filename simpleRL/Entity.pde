@@ -11,4 +11,9 @@ abstract class Entity{
     this.x = pos.x;
     this.y = pos.y;
   }
+  public void MoveTo(Point newPos){
+    pos = newPos.Clone();
+    this.x = pos.x;
+    this.y = pos.y;
+  }
 }

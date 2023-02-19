@@ -1,10 +1,12 @@
 Actor currentActor;
 int currentActorIndex;
 void gameLoop() {
+  
   if (currentActor.HasEnoughEnergy()) {
-    var action = currentActor.getAction();
+    var action = currentActor.GetAction();
     if (action == null) return; // should only happen when it's the players turn and they haven't input anything
-
+    println("performing");
+    println(player.x);
     while (true) {
       var result = action.Perform();
       if (!result.succeeded) return; // invalid action
@@ -30,7 +32,7 @@ void UpdateGame() {
 
 PGraphics mapView;
 void DisplayMap() {
-  background(20);
+  //background(20);
   if (somethingChanged)
     mapView = currentLevel.GetMapView(0, 0, 60, 35);
 
@@ -53,7 +55,7 @@ void draw() {
     DisplayMainMenu();
     break;
   case PLAYING:
-    //UpdateGame();
+    UpdateGame();
     DisplayGame();
     break;
   case GAMEOVER:
@@ -91,9 +93,10 @@ void DisplayUI() {
 }
 
 void DisplayGame() {
+  background(20);
   DisplayMap();
   DisplayAnimations();
-  somethingChanged = false;
+  somethingChanged = true;
   DisplayUI();
 }
 

@@ -26,11 +26,8 @@ class Level {
   }
 
   public PGraphics GetMapView(int startX, int startY, int sizeX, int sizeY) {
-    float tileSize = tileSet[0].img.width;
-    //mapView = createGraphics((int)(sizeX * tileSize), (int)(sizeY * tileSize));
-    
+    float tileSize = tileSet[0].img.width; 
     mapView.beginDraw();
-    
     for (int x = startX; x < startX + sizeX; x++)
       for (int y = startY; y < startY + sizeY; y++)
         mapView.image(tileSet[map.mapData[x][y]].img, (x-startX) * tileSize, (y-startY) * tileSize);
@@ -39,7 +36,7 @@ class Level {
     ArrayList<Actor> actorsInView = actors.Query(viewPort);
     mapView.fill(255, 0, 255);
     for (Actor a : actorsInView)
-      mapView.image(actorTileSet[0], (a.x - startX) * tileSize, (a.y - startY) * tileSize);
+      mapView.image(a instanceof Player ? actorTileSet[0] : actorTileSet[1], (a.x - startX) * tileSize, (a.y - startY) * tileSize);
 
 
     mapView.endDraw();

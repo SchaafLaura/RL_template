@@ -43,5 +43,17 @@ class Map {
     for(int x = 0; x < w; x++)
       for(int y = 0; y < h; y++)
         mapData[x][y] = random(0,1) < 0.9f ? 0 : 1; // 0 is for ground, 1 is walls
+    for(int x = 0; x < w; x++){
+      mapData[x][0] = 1;
+      mapData[x][h-1] = 1;
+    }
+    
+    for(int y = 0; y < h; y++){
+      mapData[0][y] = 1;
+      mapData[w-1][y] = 1;
+    }
+    
+    
+    
   }
 }
