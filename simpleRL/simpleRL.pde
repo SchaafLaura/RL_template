@@ -31,16 +31,14 @@ void UpdateGame() {
 }
 
 PGraphics mapView;
+PImage TESTING;
 void DisplayMap() {
-  //background(20);
   if (somethingChanged)
     mapView = currentLevel.GetMapView(0, 0, 60, 35);
-
   float mapX = 24;
   float mapY = 24;
-
-
   image(mapView, mapX, mapY);
+  image(TESTING, 48, 48);
 }
 
 boolean somethingChanged = true;

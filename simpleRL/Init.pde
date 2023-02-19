@@ -17,7 +17,7 @@ void setup() {
   player.speed = 50;
 
   for (int i = 0; i < 100; i++) {
-    Enemy bla = new Enemy((int)random(2,currentLevel.map.w-2), (int)random(2,currentLevel.map.h-2));
+    Enemy bla = new Enemy((int)random(2, currentLevel.map.w-2), (int)random(2, currentLevel.map.h-2));
     bla.speed = (int) random(30, 100);
     currentLevel.AddActor(bla);
   }
@@ -36,7 +36,25 @@ void setup() {
     loadImage("mapHighlight.png")
   };
 
+  TESTING = loadImage("2x2Enemy.png");
 
   gameState = GameState.PLAYING;
   previousGameState = GameState.PLAYING;
+}
+
+
+GameState gameState;
+GameState previousGameState;
+enum GameState {
+  LOADING,
+    MAINMENU,
+    PLAYING,
+    GAMEOVER,
+    HIGHSCORE,
+    CONTENTWARNING
+}
+
+void SwitchToGameState(GameState state) {
+  previousGameState = gameState;
+  gameState = state;
 }
