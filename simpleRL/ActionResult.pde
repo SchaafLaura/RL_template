@@ -4,7 +4,6 @@ public class ActionResult {
   public Action alternative;
   public Boolean succeeded;
 
-
   public ActionResult(Boolean succeeded) {
     this.succeeded = succeeded;
     this.alternative = null;

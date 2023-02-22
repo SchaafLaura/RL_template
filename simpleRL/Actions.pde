@@ -11,6 +11,29 @@ abstract class Action {
   public abstract ActionResult Perform();
 }
 
+class AttackAction extends Action{
+  Point dir;
+  public AttackAction(Actor performedBy, Point dir){
+    super(performedBy);
+    this.dir = dir;
+  }
+  
+  public ActionResult Perform(){
+    if(dir.x == 0 && dir.y == 0)
+      return failure;
+    
+    Point attackLocation = Point.Add(dir, performedBy.pos);
+    Actor toAttack = currentLevel.TryGetActorAt(attackLocation);
+    
+    if(toAttack == null)
+      return failure;
+    
+    toAttack.TakeDamage(50);
+    performedBy.energy -= 100;
+    return success;
+  }
+}
+
 class MovementAction extends Action {
   Point dir;
   public MovementAction(Actor performedBy, Point dir) {
@@ -19,53 +42,28 @@ class MovementAction extends Action {
   }
 
   public ActionResult Perform() {
-    Point goalLocation = Point.Add(new Point(performedBy.pos.x, performedBy.pos.y), dir);
+    Point goalLocation = Point.Add(performedBy.pos, dir);
 
     // standing still action
     if (dir.x == 0 && dir.y == 0) {
-      /*if (!performedBy.isPlayer && performedBy.health < performedBy.maxHealth) {
-        currentLevel.map.tiles[performedBy.posX][performedBy.posY].materialAmounts[material_Blood] += 70;
-      }*/
       performedBy.energy -= cost;
       return success;
     }
-    
     
     if(!tileSet[currentLevel.map.mapData[goalLocation.x][goalLocation.y]].passable)
       return failure;
     
+    if (currentLevel.TryGetActorAt(goalLocation) != null) {
+      AttackAction alt = new AttackAction(performedBy, dir);
+      return new ActionResult(alt);
+    }
     
     performedBy.MoveTo(goalLocation);
     performedBy.energy -= cost;
-    println("changed position");
-    return success;
-
-    // new spot is empty - we can move there
-    /*
-    if (currentLevel.map.tiles[(int)goalLocation.x][(int)goalLocation.y].passable &&
-      currentLevel.tryGetActorAt((int)goalLocation.x, (int)goalLocation.y) == null   ) {
-      performedBy.posX = (int) goalLocation.x;
-      performedBy.posY = (int) goalLocation.y;
-
-      performedBy.energy -= cost;
-      if (!performedBy.isPlayer && performedBy.health < performedBy.maxHealth) {
-
-        currentLevel.map.tiles[performedBy.posX + (int)random(-2, 2)][performedBy.posY+ (int)random(-2, 2)].materialAmounts[material_Blood] += random(40, 100);
-      }
-      if (performedBy instanceof Player) {
-        step.play();
-      }
-
-      performedBy.energy -= cost;
-      return success;
-    }*/
     
-    // alternative attack when walking into someone
-    /*
-    if (currentLevel.tryGetActorAt((int)goalLocation.x, (int)goalLocation.y) != null) {
-      AttackAction alt = new AttackAction(performedBy, direction);
-      return new ActionResult(alt);
-    }
-    return failure;*/
+    if(performedBy instanceof Player)
+      step.play();
+    
+    return success;
   }
 }

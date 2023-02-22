@@ -59,6 +59,26 @@ class QuadTree<EType extends Entity> {
     return foundNodes;
   }
 
+  boolean RemoveAt(Point p) {
+    if (!boundary.Contains(p.x, p.y))
+      return false;
+    for (int i = 0; i < entities.size(); i++) {
+      if (entities.get(i).pos.x == p.x && entities.get(i).pos.y == p.y) {
+        entities.remove(i);
+        return true;
+      }
+    }
+
+    if (!divided)
+      return false;
+
+    if (NE.RemoveAt(p)) return true;
+    if (SE.RemoveAt(p)) return true;
+    if (SW.RemoveAt(p)) return true;
+    if (NW.RemoveAt(p)) return true;
+    return false;
+  }
+
   boolean Insert(EType entity) {
     if (!boundary.Contains(entity.x, entity.y))
       return false;
@@ -102,6 +122,18 @@ class QuadTree<EType extends Entity> {
     SE.Display();
     SW.Display();
     NW.Display();
+  }
+
+  int Size() {
+    int sum = 0;
+    sum += entities.size();
+    if (!divided)
+      return sum;
+    sum += NE.Size();
+    sum += SE.Size();
+    sum += SW.Size();
+    sum += NW.Size();
+    return sum;
   }
 
   void DisplayPoints() {

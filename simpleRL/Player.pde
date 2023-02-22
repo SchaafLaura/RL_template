@@ -1,6 +1,8 @@
 class Player extends Actor {
   Player(int x, int y) {
     super(x, y);
+    health = 1000;
+    maxHealth = 1000;
   }
   void DecideOnAction() {
   }

@@ -52,6 +52,13 @@ class Line {
     MakeIndices(x1_, y1_, x0_, y0_);
     SortIndices();
   }
+  
+  void Reverse(){
+    ArrayList<PVector> newIndices = new ArrayList<PVector>();
+    for(int i = indices.size() - 1; i >= 0; i--)
+      newIndices.add(indices.get(i));
+    indices = newIndices;
+  }
 
   void MakeIndices(int x1, int y1, int x0, int y0) {
     int dx = abs(x1-x0);

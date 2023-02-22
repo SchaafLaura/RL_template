@@ -1,12 +1,9 @@
 Actor currentActor;
 int currentActorIndex;
 void gameLoop() {
-  
   if (currentActor.HasEnoughEnergy()) {
     var action = currentActor.GetAction();
     if (action == null) return; // should only happen when it's the players turn and they haven't input anything
-    println("performing");
-    println(player.x);
     while (true) {
       var result = action.Perform();
       if (!result.succeeded) return; // invalid action
@@ -101,7 +98,6 @@ void DisplayGame() {
 void DisplayAnimations(){
   float t = millis();
   if(t - timePassed > 1000){
-    println("second passed");
     timePassed = t;
   }
 }

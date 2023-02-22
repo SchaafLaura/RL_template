@@ -13,8 +13,18 @@ abstract class Actor extends Entity {
     super(x, y);
     actionStack = new ArrayDeque<Action>();
   }
+  
+  public void MoveTo(Point newPos){
+    currentLevel.actors.RemoveAt(pos);
+    pos = newPos.Clone();
+    this.x = pos.x;
+    this.y = pos.y;
+    currentLevel.actors.Insert(this);
+  }
 
   public Boolean HasEnoughEnergy() {
+    if(health <= 0)
+      return false;
     return energy >= 100;
   }
   void GainEnergy() {

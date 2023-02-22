@@ -1,17 +1,20 @@
 class Level {
   int stage;
   Map map;
+  int[][] illuminationMap;
+  ArrayList<Light> lights;
+  boolean lightsChanged = true;
   QuadTree<Actor> actors;
   ArrayList<Actor> actorList;
   QuadTree<Item> items;
   ArrayList<Item> itemList;
+
 
   //PGraphics mapView;
 
   public Level(int stage) {
     this.stage = stage;
     Init();
-    
     mapView = createGraphics((int)(60 * 24), (int)(60 * 24));
   }
 
@@ -26,22 +29,44 @@ class Level {
   }
 
   public PGraphics GetMapView(int startX, int startY, int sizeX, int sizeY) {
-    float tileSize = tileSet[0].img.width; 
+    float tileSize = tileSet[0].img.width;
     mapView.beginDraw();
-    for (int x = startX; x < startX + sizeX; x++)
-      for (int y = startY; y < startY + sizeY; y++)
+    mapView.background(0);
+    mapView.blendMode(ADD);
+    for (int x = startX; x < startX + sizeX; x++) {
+      for (int y = startY; y < startY + sizeY; y++) {
+        int brightness = illuminationMap[x][y];
+        if (brightness == 0)
+          continue;
+        mapView.tint(map(brightness, 0, maximumBrightness, 0, 255));
         mapView.image(tileSet[map.mapData[x][y]].img, (x-startX) * tileSize, (y-startY) * tileSize);
-
+      }
+    }
     Rectangle viewPort = new Rectangle(startX + sizeX/2, startY + sizeY/2, sizeX, sizeY);
     ArrayList<Actor> actorsInView = actors.Query(viewPort);
-    mapView.fill(255, 0, 255);
-    for (Actor a : actorsInView)
+    for (Actor a : actorsInView) {
+      int brightness = illuminationMap[a.x][a.y];
+      if (brightness == 0)
+        continue;
+      mapView.tint(map(brightness, 0, maximumBrightness, 0, 255));
       mapView.image(a instanceof Player ? actorTileSet[0] : actorTileSet[1], (a.x - startX) * tileSize, (a.y - startY) * tileSize);
-
+    }
 
     mapView.endDraw();
-    
+
     return mapView;
+  }
+
+  void UpdateLights() {
+    if (!lightsChanged)
+      return;
+
+    for (Light light : lights) {
+      light.Illuminate();
+    }
+
+
+    lightsChanged = false;
   }
 
 
@@ -60,6 +85,11 @@ class Level {
     return true;
   }
 
+  public Actor TryGetActorAt(Point p) {
+    return TryGetActorAt(p.x, p.y);
+  }
+
+
   public Actor TryGetActorAt(int x, int y) {
     Rectangle selection = new Rectangle(x, y, 0.5, 0.5);
     ArrayList<Actor> maybeActor = actors.Query(selection);
@@ -72,12 +102,18 @@ class Level {
 
   void Init() {
     this.map = new Map(60, 35);
+    this.illuminationMap = new int[60][35];
+    for (int i = 0; i < 60; i++)
+      for (int j = 0; j < 35; j++)
+        illuminationMap[i][j] = 0;
+
     Rectangle levelBoundary = new Rectangle(map.w/2, map.h/2, map.w, map.h);
 
     actors = new QuadTree<Actor>(levelBoundary, 10);
     actorList = new ArrayList<Actor>();
     items = new QuadTree<Item>(levelBoundary, 10);
     itemList = new ArrayList<Item>();
+    lights = new ArrayList<Light>();
   }
 
   public void Update() {
